@@ -10,3 +10,15 @@
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
+
+/castle/data
+/castle/castle
+
+/classifier/data
+/classifier/classifier
+
+/tail/tail
+
+*.csv
+*.pdf
+*.html
