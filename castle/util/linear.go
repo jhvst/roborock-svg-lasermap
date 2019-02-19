@@ -27,9 +27,9 @@ func BoundingBox(hypotenuse, angle float64) (thisBeam BeamBoundingBox, x, y floa
 	bounding_side_d := 1.0 * math.Sin(1*math.Pi/180) * hypotenuse; //(1.23)
 	bounding_side_w := 1.0 * bounding_side_d; //(1.45)
 
-    // Box centre
-	x := math.Cos(angle_rad)*hypotenuse;
-	y := math.Sin(angle_rad)*hypotenuse;
+        // Box centre
+	x = math.Cos(angle_rad)*hypotenuse;
+	y = math.Sin(angle_rad)*hypotenuse;
 
 	// Dims
 	bwx := math.Cos(math.Pi/2+angle_rad)*bounding_side_w;
@@ -42,7 +42,7 @@ func BoundingBox(hypotenuse, angle float64) (thisBeam BeamBoundingBox, x, y floa
 		UpperRight: BeamPoint{}.New(x+bwx+blx, y+bwy+bly),
 		LowerRight: BeamPoint{}.New(x+bwx-blx, y+bwy-bly),
 		UpperLeft:  BeamPoint{}.New(x-bwx+blx, y-bwy+bly),
-		LowerLeft:  BeamPoint{}.New(x-bwx-blx, y-bwy-bly]),
+		LowerLeft:  BeamPoint{}.New(x-bwx-blx, y-bwy-bly),
 	}
 
 	return thisBeam, x, y
