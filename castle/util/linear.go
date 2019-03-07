@@ -21,62 +21,28 @@ func ConvertToBoundingBox(x, y float64) BeamBoundingBox {
 }
 
 func BoundingBox(hypotenuse, angle float64) (thisBeam BeamBoundingBox, x, y float64) {
+	angle_rad := angle*(2*math.Pi)/360;
 
-	bounding_side := 2 * math.Pi * hypotenuse / 360
+	// Scale box width and height (depth). Resolution = 1 deg.
+	bounding_side_d := 1.0 * math.Sin(1*math.Pi/180) * hypotenuse; //(1.23)
+	bounding_side_w := 1.0 * bounding_side_d; //(1.45)
 
-	if angle < 0 {
+        // Box centre
+	x = math.Cos(angle_rad)*hypotenuse;
+	y = math.Sin(angle_rad)*hypotenuse;
 
-		x = math.Cos((180-math.Abs(angle))*math.Pi/180) * hypotenuse * -1
-		y = math.Sin((180-math.Abs(angle))*math.Pi/180) * hypotenuse * -1
+	// Dims
+	bwx := math.Cos(math.Pi/2+angle_rad)*bounding_side_w;
+	bwy := math.Sin(math.Pi/2+angle_rad)*bounding_side_w;
+	blx := math.Cos(angle_rad)*bounding_side_d;
+	bly := math.Sin(angle_rad)*bounding_side_d;
 
-		bbx := math.Cos((90-math.Abs(angle))*math.Pi/180) * bounding_side / 2
-		bby := math.Sin((90-math.Abs(angle))*math.Pi/180) * bounding_side / 2
-
-		bbx2 := math.Cos(angle*math.Pi/180) * bounding_side
-		bby2 := math.Sin(angle*math.Pi/180) * bounding_side
-
-		if angle < -90 {
-			thisBeam = BeamBoundingBox{
-				UpperRight: BeamPoint{}.New(x+bbx, y-bby),
-				LowerRight: BeamPoint{}.New(x+bbx-bbx2, y-bby-bby2),
-				UpperLeft:  BeamPoint{}.New(x-bbx, y+bby),
-				LowerLeft:  BeamPoint{}.New(x-bbx-bbx2, y+bby-bby2),
-			}
-		} else {
-			thisBeam = BeamBoundingBox{
-				UpperRight: BeamPoint{}.New(x+bbx, y+bby),
-				LowerRight: BeamPoint{}.New(x+bbx+bbx2, y+bby-bby2),
-				UpperLeft:  BeamPoint{}.New(x-bbx, y-bby),
-				LowerLeft:  BeamPoint{}.New(x-bbx+bbx2, y-bby-bby2),
-			}
-		}
-
-	} else {
-
-		x = math.Cos(angle*math.Pi/180) * hypotenuse
-		y = math.Sin(angle*math.Pi/180) * hypotenuse
-
-		bbx := math.Cos((90-math.Abs(angle))*math.Pi/180) * bounding_side / 2
-		bby := math.Sin((90-math.Abs(angle))*math.Pi/180) * bounding_side / 2
-
-		bbx2 := math.Cos(angle*math.Pi/180) * bounding_side
-		bby2 := math.Sin(angle*math.Pi/180) * bounding_side
-
-		if angle < 90 {
-			thisBeam = BeamBoundingBox{
-				LowerRight: BeamPoint{}.New(x+bbx, y-bby),
-				UpperRight: BeamPoint{}.New(x+bbx+bbx2, y-bby+bby2),
-				LowerLeft:  BeamPoint{}.New(x-bbx, y+bby),
-				UpperLeft:  BeamPoint{}.New(x-bbx+bbx2, y+bby+bby2),
-			}
-		} else {
-			thisBeam = BeamBoundingBox{
-				LowerRight: BeamPoint{}.New(x+bbx, y+bby),
-				UpperRight: BeamPoint{}.New(x+bbx-bbx2, y+bby+bby2),
-				LowerLeft:  BeamPoint{}.New(x-bbx, y-bby),
-				UpperLeft:  BeamPoint{}.New(x-bbx-bbx2, y-bby+bby2),
-			}
-		}
+	// Corner stones
+	thisBeam = BeamBoundingBox{
+		UpperRight: BeamPoint{}.New(x+bwx+blx, y+bwy+bly),
+		LowerRight: BeamPoint{}.New(x+bwx-blx, y+bwy-bly),
+		UpperLeft:  BeamPoint{}.New(x-bwx+blx, y-bwy+bly),
+		LowerLeft:  BeamPoint{}.New(x-bwx-blx, y-bwy-bly),
 	}
 
 	return thisBeam, x, y
